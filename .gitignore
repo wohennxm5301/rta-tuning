@@ -1,0 +1,22 @@
+# Local configuration (contains machine-specific paths)
+local.properties
+
+# Build outputs
+*.apk
+*.aab
+*.ap_
+build/
+.gradle/
+
+# IDE
+*.iml
+.idea/
+.DS_Store
+
+# Gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+# Temp git workaround dirs
+.mygit/
+.gitobjects/
+.gitindex

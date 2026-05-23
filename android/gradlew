@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+APP_HOME="$(cd "$(dirname "$0")" && pwd)"
+JAR="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+PROPS="$APP_HOME/gradle/wrapper/gradle-wrapper.properties"
+
+if [ ! -f "$JAR" ]; then
+  echo ">> gradle-wrapper.jar not found. Downloading Gradle 8.5..."
+  GRADLE_ZIP="$APP_HOME/gradle/wrapper/gradle-8.5-bin.zip"
+  GRADLE_DIR="$APP_HOME/gradle/wrapper/gradle-8.5"
+  curl -sL -o "$GRADLE_ZIP" https://services.gradle.org/distributions/gradle-8.5-bin.zip
+  unzip -qo "$GRADLE_ZIP" -d "$GRADLE_DIR"
+  rm "$GRADLE_ZIP"
+  GRADLE_CMD="$GRADLE_DIR/gradle-8.5/bin/gradle"
+  chmod +x "$GRADLE_CMD"
+  cd "$APP_HOME"
+  exec "$GRADLE_CMD" "$@"
+else
+  cd "$APP_HOME"
+  exec java -jar "$JAR" "$@"
+fi
+
