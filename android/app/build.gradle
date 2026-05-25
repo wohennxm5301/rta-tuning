@@ -11,11 +11,4 @@ android {
         versionCode 7
         versionName "7.0"
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-dependencies {
-    implementation "androidx.appcompat:appcompat:1.6.1"
 }
