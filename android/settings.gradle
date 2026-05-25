@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "RTATuning"
-include ':app'
+include ":app"
