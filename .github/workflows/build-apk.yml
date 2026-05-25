@@ -14,15 +14,14 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Remove fake wrapper files
-        run: |
-          rm -f android/gradle/wrapper/gradle-wrapper.jar
-          rm -f android/gradlew android/gradlew.bat
-
       - uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: "8.5"
           generate-job-summary: false
+
+      - name: Generate Gradle Wrapper in android/
+        working-directory: android
+        run: gradle wrapper --gradle-version 8.5
 
       - name: Install SDK components
         run: |
@@ -39,12 +38,14 @@ jobs:
         env:
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
-      - name: Find APK files
+      - name: Show APK files
         run: |
-          find . -name "*.apk" -type f -ls
-          ls -la android/app/build/outputs/apk/debug/ 2>/dev/null || echo "no debug apk dir"
+          find android/ -name "*.apk" -type f -ls 2>/dev/null
+          find android/ -name "*.apk" -type f -exec ls -la {} \; 2>/dev/null
+          ls -laR android/app/build/ 2>/dev/null | head -30
 
       - uses: actions/upload-artifact@v4
         with:
           name: APK
-          path: android/app/build/outputs/apk/debug/*.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
