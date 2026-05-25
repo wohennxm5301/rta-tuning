@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     id 'com.android.application'
 }
 android {
@@ -8,8 +8,8 @@ android {
         applicationId "com.rta.tuning"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "3.0"
+        versionCode 6
+        versionName "6.0"
     }
     buildTypes {
         release {

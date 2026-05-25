@@ -5,514 +5,582 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0a0a14">
+<meta name="theme-color" content="#06060f">
 <title>小白汽车调音</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0a14;--p:#111122;--b:#1e1e38;--t:#9999bb;--tb:#d0d0f0;--a1:#ff5522;--a2:#00dd99;--a3:#3388ff;--r:#ff3355;--y:#ff9922;--fm:system-ui,sans-serif;--ff:'Courier New',monospace}
-body{font-family:var(--fm);background:var(--bg);color:var(--t);height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;padding:8px 14px;background:var(--p);border-bottom:1px solid var(--b);gap:10px;flex-shrink:0;min-height:48px}
-.topbar .logo{font-size:17px;font-weight:800;color:var(--a1);white-space:nowrap}
-.topbar .logo s{color:var(--tb);text-decoration:none;font-weight:600}
-.topbar input{flex:1;background:var(--bg);border:1px solid var(--b);border-radius:16px;color:var(--tb);padding:6px 14px;font-size:13px;outline:none;font-family:var(--fm);max-width:240px;min-width:0}
-.topbar .chip{background:var(--b);padding:4px 12px;border-radius:12px;font-size:11px;color:var(--tb);white-space:nowrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:24px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--fm);transition:all .15s;white-space:nowrap}
-.btn-play{width:60px;height:60px;border-radius:50%;background:var(--a2);color:#000;font-size:26px;flex-shrink:0}
-.btn-play.on{background:var(--r);color:#fff;animation:pulse .8s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,51,85,.5)}50%{box-shadow:0 0 0 16px rgba(255,51,85,0)}}
-.btn-act{background:var(--a1);color:#fff}
-.btn-out{background:transparent;border:1.5px solid var(--b);color:var(--t)}
-.btn-sm{font-size:11px;padding:5px 12px}
-.bottom{display:flex;align-items:center;justify-content:center;gap:14px;padding:8px 14px;background:var(--p);border-top:1px solid var(--b);flex-shrink:0;min-height:52px;position:relative}
-.bottom .hint{font-size:11px;color:#555;position:absolute;left:14px;transition:color .3s}
-.content{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch}
-.canvas-wrap{position:relative;background:var(--bg);border:1px solid var(--b);border-radius:10px;min-height:180px}
-.canvas-wrap canvas{width:100%;height:100%;display:block}
-.legend{position:absolute;top:6px;right:8px;display:flex;flex-direction:column;gap:3px;background:rgba(8,8,18,.85);padding:6px 8px;border-radius:6px;font-size:9px}
-.legend i{display:flex;align-items:center;gap:5px}
-.legend b{width:12px;height:3px;border-radius:2px;display:inline-block}
-.card{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:12px;margin-bottom:10px;font-size:12px;line-height:1.45}
-.card h4{color:var(--tb);font-size:14px;margin-bottom:6px}
-.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin:2px 3px 2px 0;font-weight:600}
-.tag.g{background:rgba(0,221,153,.15);color:var(--a2)}
-.tag.r{background:rgba(255,51,85,.15);color:var(--r)}
-.tag.b{background:rgba(51,136,255,.15);color:var(--a3)}
-.tag.y{background:rgba(255,153,34,.15);color:var(--y)}
-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--ff)}
-th{text-align:center;padding:6px 4px;background:var(--bg);color:#666;font-weight:500;font-size:10px;border-bottom:2px solid var(--b)}
-td{text-align:center;padding:5px 4px;border-bottom:1px solid #15152a}
-.cut{color:var(--r);font-weight:700}.boost{color:var(--a2);font-weight:700}.flat{color:#333}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--p);border:1px solid var(--b);padding:10px 20px;border-radius:20px;font-size:12px;color:var(--tb);opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060f;--surf:#0d0d1f;--bdr:#1a1a38;--dim:#555577;--txt:#9999bb;--hi:#e0e0ff;--g:#00dd88;--r:#ff3355;--b:#3388ff;--y:#ff9922;--o:#ff5522}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.app{display:flex;flex-direction:column;height:100%}
+.top{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surf);border-bottom:1px solid var(--bdr);flex-shrink:0}
+.top .logo{font-size:16px;font-weight:800;color:var(--o)}
+.top .logo span{color:var(--hi);font-weight:400}
+.top input{flex:1;background:var(--bg);border:1px solid var(--bdr);border-radius:14px;color:var(--hi);padding:5px 12px;font-size:12px;outline:none;min-width:0}
+.top input::placeholder{color:var(--dim)}
+.top .badge{background:var(--bdr);padding:3px 10px;border-radius:10px;font-size:10px;color:var(--hi);white-space:nowrap}
+.strip{display:flex;align-items:center;gap:10px;padding:4px 10px;background:var(--bg);border-bottom:1px solid var(--bdr);flex-shrink:0;font-size:10px}
+.strip .dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;flex-shrink:0}
+.dot.g{background:var(--g)}.dot.r{background:var(--r)}.dot.y{background:var(--y)}
+.strip .sep{color:#2a2a40}
+.strip select{background:var(--surf);border:1px solid var(--bdr);border-radius:6px;color:var(--txt);padding:2px 5px;font-size:10px}
+.main{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
+.cv-wrap{position:relative;background:var(--bg);border:1px solid var(--bdr);border-radius:8px;height:220px}
+.cv-wrap canvas{width:100%;height:100%;display:block}
+.cv-wrap .legend{position:absolute;top:4px;right:6px;display:flex;flex-direction:column;gap:2px;background:rgba(6,6,15,.9);padding:4px 7px;border-radius:4px;font-size:8px}
+.legend i{display:flex;align-items:center;gap:4px;font-style:normal}
+.legend b{width:14px;height:2px;border-radius:1px;display:inline-block}
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:10px;margin-bottom:7px;font-size:11px;line-height:1.4}
+.card h4{color:var(--hi);font-size:13px;margin-bottom:5px}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;margin:1px 2px;font-weight:600}
+.tag.g{background:rgba(0,221,136,.12);color:var(--g)}.tag.r{background:rgba(255,51,85,.12);color:var(--r)}
+.tag.b{background:rgba(51,136,255,.12);color:var(--b)}.tag.y{background:rgba(255,153,34,.12);color:var(--y)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:none;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;letter-spacing:.3px}
+.btn:active{transform:scale(.96)}
+.btn-play{width:56px;height:56px;border-radius:50%;background:var(--g);color:#000;font-size:22px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,221,136,.25)}
+.btn-play.on{background:var(--r);color:#fff;animation:pls .7s infinite;box-shadow:0 2px 16px rgba(255,51,85,.4)}
+@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(255,51,85,.5)}50%{box-shadow:0 0 0 12px rgba(255,51,85,0)}}
+.btn-act{background:var(--o);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px}
+.btn-out{background:transparent;border:1.5px solid var(--bdr);color:var(--txt);padding:7px 14px;border-radius:20px;font-size:11px}
+.btn-sm{font-size:10px;padding:4px 10px}
+.bottom{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 10px;background:var(--surf);border-top:1px solid var(--bdr);flex-shrink:0;min-height:48px;position:relative}
+.bottom .hint{font-size:10px;color:var(--dim);position:absolute;left:10px}
+table{width:100%;border-collapse:collapse;font-size:10px;font-family:'Courier New',monospace}
+th{text-align:center;padding:4px 3px;background:var(--bg);color:var(--dim);font-weight:500;font-size:9px;border-bottom:2px solid var(--bdr)}
+td{text-align:center;padding:3px;border-bottom:1px solid #12122a}
+.cut{color:var(--r);font-weight:700}.boost{color:var(--g);font-weight:700}.flat{color:#444}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--surf);border:1px solid var(--bdr);padding:8px 16px;border-radius:16px;font-size:11px;color:var(--hi);opacity:0;transition:opacity .25s;pointer-events:none;z-index:99;box-shadow:0 4px 16px rgba(0,0,0,.6)}
 .toast.on{opacity:1}
 .hidden{display:none!important}
-.status-bar{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:11px;flex-wrap:wrap}
-.status-bar .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}
-.status-bar .dot.green{background:var(--a2)}
-.status-bar .dot.red{background:var(--r)}
-.status-bar .dot.yellow{background:var(--y)}
-.mode-switch{display:flex;background:var(--b);border-radius:20px;padding:3px;gap:2px}
-.mode-switch button{background:transparent;border:none;color:var(--t);padding:6px 14px;border-radius:18px;font-size:11px;cursor:pointer;font-family:var(--fm);transition:.2s}
-.mode-switch button.sel{background:var(--a2);color:#000;font-weight:600}
-.compare-bar{display:flex;align-items:center;gap:6px;font-size:10px;margin:6px 0}
-.compare-bar .bar{flex:1;height:4px;border-radius:2px;background:var(--b);overflow:hidden}
-.compare-bar .fill{height:100%;border-radius:2px}
+#progressWrap{display:none;height:2px;background:var(--bdr);flex-shrink:0}
+#progressBar{height:100%;background:var(--g);width:0;transition:width .3s linear}
 </style>
 </head>
 <body>
-<div class="topbar">
-<span class="logo">小白<s>汽车调音</s></span>
-<input type="text" id="carName" placeholder="输入车型, 如: BMW 330i" onchange="updateCar()">
-<span class="chip" id="sessionBadge">就绪</span>
+<div class="app">
+<div class="top">
+<span class="logo">小白<span>汽车调音</span></span>
+<input type="text" id="carName" placeholder="输入车型, 如: BMW 330i" onchange="ST.car=this.value">
+<span class="badge" id="sessionBadge">就绪</span>
 </div>
 
-<div class="status-bar" style="padding:6px 14px;border-bottom:1px solid var(--b);flex-shrink:0" id="statusBar">
-<span id="micStatus"><span class="dot yellow"></span>麦克风: 检测中...</span>
-<span style="color:#444">|</span>
-<span id="btStatus"><span class="dot yellow"></span>蓝牙: 请连接车载</span>
-<span style="color:#444">|</span>
-<select id="posSelect" onchange="ST.position=this.value" style="background:var(--bg);border:1px solid var(--b);border-radius:8px;color:var(--t);padding:3px 6px;font-size:10px">
+<div class="strip" id="statusStrip">
+<span id="micStatus"><span class="dot y"></span>麦克风: 请求中...</span>
+<span class="sep">|</span>
+<span id="btHint"><span class="dot y"></span>蓝牙: 请连接车载音响</span>
+<span class="sep">|</span>
+<select id="posSelect" onchange="ST.position=this.value">
 <option value="center">中心位</option><option value="driver">主驾位</option><option value="rear">后排中心</option>
 </select>
-<span style="color:#444">|</span>
+<span class="sep">|</span>
 <span>时长:</span>
-<select id="durSelect" onchange="duration=parseInt(this.value)" style="background:var(--bg);border:1px solid var(--b);border-radius:8px;color:var(--t);padding:3px 6px;font-size:10px">
-<option value="15">15秒</option><option value="30" selected>30秒</option><option value="45">45秒</option><option value="60">60秒</option>
+<select id="durSelect" onchange="ST.duration=parseInt(this.value)">
+<option value="15">15s</option><option value="30" selected>30s</option><option value="45">45s</option><option value="60">60s</option>
 </select>
 </div>
 
-<div class="content" id="mainContent"></div>
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<div class="main" id="mainContent"></div>
 
 <div class="bottom">
-<span class="hint" id="bottomHint">点击 ▶ 开始RTA测试</span>
+<span class="hint" id="bottomHint">▶ 点击开始RTA测试</span>
 <button class="btn btn-play" id="btnBigPlay" onclick="bigPlay()">▶</button>
 <button class="btn btn-out" id="btnSave" onclick="saveSession()" style="display:none">💾 保存</button>
-<button class="btn btn-out btn-sm" id="btnExport" onclick="exportJSON()" style="display:none">📤 导出</button>
+<button class="btn btn-out btn-sm" id="btnExport" onclick="exportJSON()" style="display:none">📛 导出</button>
 </div>
-
+</div>
 <div class="toast" id="toast"></div>
-
 <script>
-// ====== CORE STATE ======
-var ST={car:'',playing:false,micOk:false,src:'auto',round:0,position:'center'};
-var AC=null,AN=null,GN=null,MN=null,MS=null,PN=null;
+// ====== 小白汽车调音 v6.0 ======
+var ST={car:'',playing:false,micOk:false,round:0,position:'center',duration:30};
+var AC=null,AN=null,GN=null,MN=null,MS=null,bufSrc=null;
 var snap=null,prevSnap=null,targetLv=null;
-var timer=null,countdown=0,duration=30;
+var timer=null,countdown=0,animId=null;
 var ISO=[20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000,2500,3150,4000,5000,6300,8000,10000,12500,16000,20000];
 
-// ====== AUDIO ENGINE ======
+// ====== AUDIO INIT ======
 function initAC(){
-  if(AC)return;
-  AC=new(window.AudioContext||window.webkitAudioContext)();
-  AN=AC.createAnalyser();AN.fftSize=8192;AN.smoothingTimeConstant=0.3;AN.minDecibels=-90;AN.maxDecibels=-10;
-  GN=AC.createGain();GN.gain.value=0.35;
-  GN.connect(AN);AN.connect(AC.destination);
+  if(AC) return;
+  AC = new (window.AudioContext||window.webkitAudioContext)();
+  AN = AC.createAnalyser(); AN.fftSize=8192; AN.smoothingTimeConstant=0.3; AN.minDecibels=-90; AN.maxDecibels=-10;
+  GN = AC.createGain(); GN.gain.value=0.35;
 }
-
+// ====== PINK NOISE GENERATOR (modified Voss-McCartney) ======
 function makePinkNoise(){
-  var sr=AC.sampleRate,sz=Math.min(120*sr, sr*60),buf=AC.createBuffer(1,sz,sr),d=buf.getChannelData(0);
+  var sr = AC.sampleRate;
+  var sz = Math.min(ST.duration * sr, sr * 120); // generate exact needed length
+  var buf = AC.createBuffer(1, sz, sr);
+  var d = buf.getChannelData(0);
   var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
   for(var i=0;i<sz;i++){
-    var w=Math.random()*2-1;
-    b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;
-    b2=0.96900*b2+w*0.1538520;b3=0.86650*b3+w*0.3104856;
-    b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;
-    d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;b6=w*0.115926;
+    var w = Math.random()*2-1;
+    b0=0.99886*b0+w*0.0555179;
+    b1=0.99332*b1+w*0.0750759;
+    b2=0.96900*b2+w*0.1538520;
+    b3=0.86650*b3+w*0.3104856;
+    b4=0.55000*b4+w*0.5329522;
+    b5=-0.7616*b5-w*0.0168980;
+    d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;
+    b6=w*0.115926;
   }
   return buf;
 }
 
+// ====== MIC REQUEST ======
 async function reqMic(){
-  try{
-    MS=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1}});
-    ST.micOk=true;
-    document.getElementById('micStatus').innerHTML='<span class="dot green"></span>麦克风: 已就绪';
-    ST.src='mic';
-    toast('✅ 麦克风已连接');
-  }catch(e){
-    ST.micOk=false;ST.src='internal';
-    document.getElementById('micStatus').innerHTML='<span class="dot red"></span>麦克风: 不可用(内部模式)';
+  try {
+    MS = await navigator.mediaDevices.getUserMedia({
+      audio: {echoCancellation:false, noiseSuppression:false, autoGainControl:false, channelCount:1}
+    });
+    ST.micOk = true;
+    document.getElementById('micStatus').innerHTML='<span class=\"dot g\"></span>麦克风: 已就绪';
+    toast('✅ 手机麦克风已连接');
+  } catch(e) {
+    ST.micOk = false;
+    document.getElementById('micStatus').innerHTML='<span class=\"dot r\"></span>麦克风: 不可用(内部模式)';
     toast('⚠ 使用内部信号分析模式');
   }
 }
 
-function mapISO(d,sr,fs){
-  var n=ISO.length,o=new Float32Array(n),bf=sr/fs,nb=d.length;
+// ====== FFT -> ISO BAND MAPPING ======
+function mapISO(freqData, sr, fftSize){
+  var n = ISO.length;
+  var o = new Float32Array(n);
+  var binFreq = sr / fftSize;
+  var nb = freqData.length;
   for(var i=0;i<n;i++){
-    var cf=ISO[i],hb=cf*0.13,lf=cf-hb,hf=cf+hb;
-    var lb=Math.max(0,Math.floor(lf/bf)),ub=Math.min(nb-1,Math.ceil(hf/bf));
-    var s=0,c=0;
-    for(var j=lb;j<=ub;j++){s+=Math.pow(10,d[j]/20);c++;}
-    o[i]=c>0?20*Math.log10(Math.max(s/c,1e-10)):-90;
+    var cf = ISO[i], hbw = cf * 0.13;
+    var lf = cf - hbw, hf = cf + hbw;
+    var lb = Math.max(0, Math.floor(lf/binFreq));
+    var ub = Math.min(nb-1, Math.ceil(hf/binFreq));
+    var sum=0, cnt=0;
+    for(var j=lb;j<=ub;j++){ sum += Math.pow(10, freqData[j]/20); cnt++; }
+    o[i] = cnt>0 ? 20*Math.log10(Math.max(sum/cnt, 1e-10)) : -90;
   }
   return o;
 }
 
+// ====== TARGET CURVE (Harman car audio style) ======
 function getTarget(){
-  var n=ISO.length,l=new Float32Array(n);
+  var n=ISO.length, l=new Float32Array(n);
   for(var i=0;i<n;i++){
     var f=ISO[i];
-    if(f<35)l[i]=4.5;
-    else if(f<60)l[i]=4.5-(f-35)/25*2.5;
-    else if(f<100)l[i]=2-(f-60)/40*2;
-    else if(f<200)l[i]=0;
-    else if(f<500)l[i]=0;
+    if(f<35)       l[i]=5;
+    else if(f<60)  l[i]=5-(f-35)/25*3;
+    else if(f<100) l[i]=2-(f-60)/40*2;
+    else if(f<200) l[i]=0;
+    else if(f<500) l[i]=0;
     else if(f<2000)l[i]=-(f-500)/1500*1.5;
-    else if(f<8000)l[i]=-1.5-(f-2000)/6000*4;
-    else l[i]=-5.5-(f-8000)/12000*4;
+    else if(f<8000)l[i]=-1.5-(f-2000)/6000*5;
+    else           l[i]=-6.5-(f-8000)/12000*4;
   }
   return l;
 }
-
-// ====== PLAYBACK ======
+// ====== MAIN PLAY BUTTON ======
 function bigPlay(){
-  if(!AC)initAC();
-  if(AC.state==='suspended')AC.resume();
+  if(ST.playing){ stopPlay(); return; }
 
-  if(ST.playing){stopPlay();return;}
+  if(!AC) initAC();
+  if(AC.state==='suspended') AC.resume();
 
-  if(!ST.micOk && ST.src==='auto'){
-    reqMic().then(function(){
-      updateMicUI();
-      _doPlay();
-    });
+  // If mic not yet requested, try now
+  if(!ST.micOk && !MS){
+    reqMic().then(function(){ setTimeout(function(){ _doPlay(); }, 500); });
     return;
   }
   _doPlay();
 }
 
 function _doPlay(){
-  ST.playing=true;
-  var btn=document.getElementById('btnBigPlay');
-  btn.textContent='⏸';btn.classList.add('on');
-  document.getElementById('bottomHint').textContent='⏳ 测试中...';
+  ST.playing = true;
+  ST.round++;
 
-  // Connect mic if available
-  if(MS&&!MN){
-    MN=AC.createMediaStreamSource(MS);
+  var btn = document.getElementById('btnBigPlay');
+  btn.textContent = '■'; btn.classList.add('on');
+  document.getElementById('btnSave').style.display = 'none';
+  document.getElementById('btnExport').style.display = 'none';
+  document.getElementById('bottomHint').textContent = '▶ 测音中...';
+
+  // Show progress bar
+  var pw = document.getElementById('progressWrap');
+  pw.style.display = 'block';
+  var pb = document.getElementById('progressBar');
+  pb.style.width = '0%';
+
+  // Connect mic to analyser if available
+  if(MS && !MN){
+    MN = AC.createMediaStreamSource(MS);
     MN.connect(AN);
-    try{GN.disconnect(AN);}catch(e){}
   }
 
-  // Play pink noise
-  var buf=makePinkNoise();
-  PN=AC.createBufferSource();PN.buffer=buf;PN.loop=true;
+  // Generate and play pink noise
+  var buf = makePinkNoise();
+  bufSrc = AC.createBufferSource();
+  bufSrc.buffer = buf;
+  bufSrc.loop = true;
 
-  if(ST.src==='mic' && MS){
-    // External: pink noise → speakers, mic → analyser
-    try{AN.disconnect(AC.destination);}catch(e){}
-    PN.connect(GN);GN.connect(AC.destination);
+  if(ST.micOk && MS && MN){
+    // External mic mode: pink noise -> speakers, mic listens
+    try { AN.disconnect(); } catch(e){}
+    bufSrc.connect(GN);
+    GN.connect(AN);
+    AN.connect(AC.destination);
   } else {
-    // Internal: pink noise → analyser → speakers (direct analysis)
-    PN.connect(GN);
-    if(!MN)try{GN.connect(AN);}catch(e){}
-    try{AN.connect(AC.destination);}catch(e){}
+    // Internal mode: pink noise directly analyzed
+    try { MN && MN.disconnect(); } catch(e){}
+    try { AN.disconnect(); } catch(e){}
+    bufSrc.connect(GN);
+    GN.connect(AN);
+    AN.connect(AC.destination);
   }
-  PN.start(0);
+  bufSrc.start(0);
 
-  // Start RTA loop
-  if(!animId)loopRTA();
+  // Start RTA animation loop
+  if(!animId) loopRTA();
 
-  // Countdown
-  countdown=duration;
-  document.getElementById('bottomHint').textContent=fmtTime(countdown)+' ('+(ST.src==='mic'?'🎤外录':'🔊内录')+')';
-  timer=setInterval(function(){
+  // Countdown with progress bar
+  countdown = ST.duration;
+  var total = ST.duration;
+  document.getElementById('bottomHint').textContent = fmtTime(countdown) + ' (收集中...)';
+  document.getElementById('bottomHint').style.color = 'var(--g)';
+
+  timer = setInterval(function(){
     countdown--;
-    document.getElementById('bottomHint').textContent=fmtTime(countdown)+' ('+(ST.src==='mic'?'🎤外录':'🔊内录')+')';
-    if(countdown<=5)document.getElementById('bottomHint').style.color='var(--y)';
-    if(countdown<=0){clearInterval(timer);timer=null;stopPlay();autoAnalyze();}
-  },1000);
+    var pct = ((total-countdown)/total*100).toFixed(0);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('bottomHint').textContent = fmtTime(countdown) + ' (收集中...)';
+    if(countdown<=5) document.getElementById('bottomHint').style.color = 'var(--y)';
+    if(countdown<=0){
+      clearInterval(timer); timer=null;
+      stopPlay();
+      setTimeout(function(){ autoAnalyze(); }, 300);
+    }
+  }, 1000);
 }
 
 function stopPlay(){
-  ST.playing=false;
-  if(timer){clearInterval(timer);timer=null;}
-  try{PN.stop();PN.disconnect();}catch(e){}
-  var btn=document.getElementById('btnBigPlay');
-  btn.textContent='▶';btn.classList.remove('on');
+  ST.playing = false;
+  if(timer){ clearInterval(timer); timer=null; }
+  try { bufSrc.stop(); bufSrc.disconnect(); } catch(e){}
+  bufSrc = null;
+  var btn = document.getElementById('btnBigPlay');
+  btn.textContent = '▶'; btn.classList.remove('on');
+  // Reset progress bar
+  var pw = document.getElementById('progressWrap');
+  pw.style.display = 'none';
+  document.getElementById('progressBar').style.width = '0%';
 }
 
-var animId=null;
+// ====== RTA ANIMATION LOOP ======
 function loopRTA(){
   function f(){
-    animId=requestAnimationFrame(f);
-    if(ST.playing)updateRTA();
+    animId = requestAnimationFrame(f);
+    if(ST.playing) updateRTA();
   }
   f();
 }
 
 function updateRTA(){
-  if(!AN)return;
-  var d=new Float32Array(AN.frequencyBinCount);
-  AN.getFloatFrequencyData(d);
-  snap=mapISO(d,AC.sampleRate,AN.fftSize);
+  if(!AN) return;
+  var fd = new Float32Array(AN.frequencyBinCount);
+  AN.getFloatFrequencyData(fd);
+  snap = mapISO(fd, AC.sampleRate, AN.fftSize);
   drawRTA();
 }
+// ====== RTA CANVAS DRAWING ======
+function drawRTA(){
+  var c = document.getElementById('rtaCanvas');
+  if(!c) return;
+  var wrap = c.parentElement;
+  var w = wrap.clientWidth, h = wrap.clientHeight;
+  if(w<10||h<10) return;
+  var dpr = Math.min(window.devicePixelRatio||1, 2);
+  c.width = w*dpr; c.height = h*dpr;
+  c.style.width = w+'px'; c.style.height = h+'px';
+  var ctx = c.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
 
+  var padX=38, padY=18, plotW=w-padX-16, plotH=h-padY-24;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#08081a'; ctx.fillRect(0,0,w,h);
+
+  // Grid lines
+  ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.lineWidth=0.5;
+  for(var db=-6;db<=6;db+=3){
+    var gy = padY + (6-db)/12*plotH;
+    ctx.beginPath(); ctx.moveTo(padX,gy); ctx.lineTo(w-14,gy); ctx.stroke();
+    ctx.fillStyle='#444'; ctx.font='8px monospace'; ctx.textAlign='right';
+    ctx.fillText((db>0?'+':'')+db+'dB', padX-4, gy+3);
+  }
+  // Frequency labels
+  for(var vi=0;vi<ISO.length;vi+=5){
+    var vx = padX + vi/(ISO.length-1)*plotW;
+    ctx.beginPath(); ctx.moveTo(vx,padY); ctx.lineTo(vx,padY+plotH); ctx.stroke();
+    ctx.fillStyle='#333'; ctx.font='8px monospace'; ctx.textAlign='center';
+    ctx.fillText(ISO[vi]<1000?ISO[vi]+'Hz':(ISO[vi]/1000).toFixed(1)+'k', vx, padY+plotH+13);
+  }
+
+  // Target curve (dashed)
+  targetLv = targetLv || getTarget();
+  ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  for(var i=0;i<ISO.length;i++){
+    var sx = padX + i/(ISO.length-1)*plotW;
+    var sy = padY + (6-targetLv[i])/12*plotH;
+    if(i===0) ctx.moveTo(sx,sy); else ctx.lineTo(sx,sy);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Previous session curve
+  if(prevSnap){
+    ctx.strokeStyle='rgba(255,51,85,0.35)'; ctx.lineWidth=1.2;
+    ctx.beginPath();
+    for(var i=0;i<prevSnap.length;i++){
+      var sx=padX+i/(ISO.length-1)*plotW, sy=padY+(6-prevSnap[i])/12*plotH;
+      if(i===0) ctx.moveTo(sx,sy); else ctx.lineTo(sx,sy);
+    }
+    ctx.stroke();
+  }
+
+  // Current live curve
+  if(snap){
+    ctx.strokeStyle='#00dd88'; ctx.lineWidth=2; ctx.shadowColor='rgba(0,221,136,0.4)'; ctx.shadowBlur=8;
+    ctx.beginPath();
+    for(var i=0;i<snap.length;i++){
+      var sx=padX+i/(ISO.length-1)*plotW, sy=padY+(6-snap[i])/12*plotH;
+      if(i===0) ctx.moveTo(sx,sy); else ctx.lineTo(sx,sy);
+    }
+    ctx.stroke(); ctx.shadowBlur=0;
+
+    // Highlight peaks/dips > 3dB from target
+    for(var i=0;i<snap.length;i++){
+      var diff = snap[i] - targetLv[i];
+      if(Math.abs(diff)<=3) continue;
+      var mx=padX+i/(ISO.length-1)*plotW, my=padY+(6-diff)/12*plotH;
+      ctx.fillStyle = diff>3 ? '#ff3355' : '#ff9922';
+      ctx.beginPath(); ctx.arc(mx,my,3.5,0,Math.PI*2); ctx.fill();
+    }
+  }
+}
+// ====== AUTO ANALYSIS ======
 function autoAnalyze(){
-  if(!snap){toast('⚠ 未获取到数据，请重试');return;}
-  prevSnap=snap.slice ? snap.slice() : new Float32Array(snap);
-  targetLv=getTarget();
-  ST.round++;
-  document.getElementById('bottomHint').textContent='✅ 分析完成 - 第'+ST.round+'轮';
-  document.getElementById('bottomHint').style.color='var(--a2)';
-  document.getElementById('btnSave').style.display='inline-flex';
-  document.getElementById('btnExport').style.display='inline-flex';
+  if(!snap || !snap.length){
+    toast('⚠ 未获取到数据，请重试');
+    return;
+  }
+  // Save current snap as previous for next comparison
+  prevSnap = new Float32Array(snap);
+  targetLv = getTarget();
+
+  document.getElementById('bottomHint').textContent = '✅ 分析完成 - 第'+ST.round+'轮';
+  document.getElementById('bottomHint').style.color = 'var(--g)';
+  document.getElementById('btnSave').style.display = 'inline-flex';
+  document.getElementById('btnExport').style.display = 'inline-flex';
   renderResults();
 }
 
-// ====== RTA DRAWING ======
-function drawRTA(){
-  var c=document.getElementById('rtaCanvas');
-  if(!c)return;
-  var wrap=c.parentElement;
-  var w=wrap.clientWidth,h=wrap.clientHeight;
-  if(w<10||h<10)return;
-  var dpr=Math.min(window.devicePixelRatio||1,2);
-  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';
-  var ctx=c.getContext('2d');
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-
-  var padX=35,padY=20,plotW=w-padX-15,plotH=h-padY-25;
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='#08081a';ctx.fillRect(0,0,w,h);
-
-  // Grid
-  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=0.5;
-  for(var db=-6;db<=6;db+=3){
-    var gy=padY+(6-db)/12*plotH;
-    ctx.beginPath();ctx.moveTo(padX,gy);ctx.lineTo(w-15,gy);ctx.stroke();
-    ctx.fillStyle='#333';ctx.font='8px var(--ff)';ctx.textAlign='right';
-    ctx.fillText(db>0?'+'+db+'dB':db+'dB',padX-4,gy+3);
-  }
-  for(var vi=0;vi<ISO.length;vi+=5){
-    var vx=padX+vi/(ISO.length-1)*plotW;
-    ctx.beginPath();ctx.moveTo(vx,padY);ctx.lineTo(vx,padY+plotH);ctx.stroke();
-    ctx.fillText(ISO[vi]<1000?ISO[vi]+'Hz':(ISO[vi]/1000).toFixed(1)+'k',vx,padY+plotH+14);
-  }
-
-  // Draw target curve
-  if(targetLv){
-    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-    ctx.beginPath();
-    for(var i=0;i<ISO.length;i++){
-      var sx=padX+i/(ISO.length-1)*plotW,sy=padY+(6-targetLv[i])/12*plotH;
-      if(i===0)ctx.moveTo(sx,sy);else ctx.lineTo(sx,sy);
-    }
-    ctx.stroke();ctx.setLineDash([]);
-  }
-
-  // Draw snap
-  if(snap){
-    ctx.strokeStyle=ST.src==='mic'?'var(--a2)':'var(--a1)';ctx.lineWidth=2;ctx.shadowColor=ST.src==='mic'?'rgba(0,221,153,.4)':'rgba(255,85,34,.4)';ctx.shadowBlur=6;
-    ctx.beginPath();
-    for(var i=0;i<ISO.length;i++){
-      var sx=padX+i/(ISO.length-1)*plotW;
-      var val=Math.max(-6,Math.min(6,snap[i]-targetLv[i]||snap[i]));
-      var sy=padY+(6-val)/12*plotH;
-      if(i===0)ctx.moveTo(sx,sy);else ctx.lineTo(sx,sy);
-    }
-    ctx.stroke();ctx.shadowBlur=0;
-
-    // Draw peak/dip markers
-    for(var i=0;i<ISO.length;i++){
-      var diff=snap[i]-(targetLv[i]||0);
-      if(Math.abs(diff)>3){
-        var mx=padX+i/(ISO.length-1)*plotW,my=padY+(6-diff)/12*plotH;
-        ctx.fillStyle=diff>3?'var(--r)':'var(--y)';
-        ctx.beginPath();ctx.arc(mx,my,3,0,Math.PI*2);ctx.fill();
-      }
-    }
-  }
-}
-
-// ====== RENDER ======
-function renderMain(){
-  document.getElementById('mainContent').innerHTML=
-    '<div class="canvas-wrap" style="height:52vh" id="rtaWrap"><canvas id="rtaCanvas"></canvas>'+
-    '<div class="legend"><i><b style="background:'+(ST.src==='mic'?'var(--a2)':'var(--a1)')+'"></b>'+(ST.src==='mic'?'🎤外录':'🔊内录')+'</i>'+
-    (prevSnap?'<i><b style="background:var(--r)"></b>上轮</i>':'')+
-    '<i><b style="background:rgba(255,255,255,.2)"></b>目标</i></div></div>'+
-    '<div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;font-size:10px;color:#555">'+
-    '<span>模式:</span>'+
-    '<span style="color:'+(ST.src==='mic'?'var(--a2)':'var(--a1)')+';font-weight:600">'+(ST.src==='mic'?'🎤 外录 (麦克风收音)':'🔊 内录 (内部信号)')+'</span>'+
-    '<span style="margin-left:8px">测试位: <b style="color:var(--tb)">'+(ST.position==='driver'?'主驾位':ST.position==='rear'?'后排中心':'中心位')+'</b></span>'+
-    '</div>';
-  setTimeout(function(){if(!ST.playing)drawRTA();},300);
-}
-
+// ====== RESULTS PAGE ======
 function renderResults(){
-  if(!snap){
-    document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:60px 20px"><p style="font-size:40px;margin-bottom:12px">📊</p><p style="color:#555">还没有测量数据</p><p style="color:#444;font-size:11px;margin-top:4px">点击下方 ▶ 按钮开始RTA测试</p></div>';
-    return;
-  }
-  if(!targetLv)targetLv=getTarget();
+  if(!snap){ showEmpty(); return; }
+  targetLv = targetLv || getTarget();
 
-  var peaks=[],dips=[];
+  var peaks=[], dips=[];
   for(var i=0;i<snap.length;i++){
     var d=snap[i]-targetLv[i];
-    if(d>3)peaks.push({f:ISO[i],d:d,i:i});
-    else if(d<-3)dips.push({f:ISO[i],d:d,i:i});
+    if(d>3) peaks.push({f:ISO[i],d:d,i:i});
+    else if(d<-3) dips.push({f:ISO[i],d:d,i:i});
   }
 
   var h='';
 
-  // Compare bar
-  if(prevSnap){
-    var improved=0,worsened=0;
+  // Comparison with previous round
+  if(prevSnap && prevSnap.length){
+    var better=0, worse=0;
     for(var i=0;i<ISO.length;i++){
-      var pd=Math.abs(prevSnap[i]-targetLv[i]),cd=Math.abs(snap[i]-targetLv[i]);
-      if(pd-cd>0.5)improved++;else if(cd-pd>0.5)worsened++;
+      var pd=Math.abs(prevSnap[i]-targetLv[i]), cd=Math.abs(snap[i]-targetLv[i]);
+      if(pd-cd>0.5) better++; else if(cd-pd>0.5) worse++;
     }
-    h+='<div class="card"><h4>📈 改善对比 (第'+(ST.round-1)+'轮 → 第'+ST.round+'轮)</h4>';
-    h+='<div style="display:flex;gap:20px;font-size:12px"><span style="color:var(--a2)">✅ 改善: '+improved+' 频段</span><span style="color:var(--r)">⚠ 变化: '+worsened+' 频段</span></div></div>';
+    h+='<div class=\"card\"><h4>📊 改善对比 (第'+(ST.round-1)+'轮→第'+ST.round+'轮)</h4>';
+    h+='<div style=\"display:flex;gap:20px;font-size:12px\"><span style=\"color:#00dd88\">✅ 改善: '+better+' 频段</span><span style=\"color:#ff3355\">⚠ 变化: '+worse+' 频段</span></div></div>';
   }
 
-  // Diagnosis
-  h+='<div class="card"><h4>🔬 频响诊断报告</h4>';
-  h+='<p style="font-size:10px;color:#666;margin-bottom:6px">测试位: '+(ST.position==='driver'?'主驾位':ST.position==='rear'?'后排中心':'中心位')+' | 模式: '+(ST.src==='mic'?'外录':'内录')+' | 车型: '+(ST.car||'未填')+'</p>';
+  // Diagnosis card
+  h+='<div class=\"card\"><h4>🔩 频响诊断报告</h4>';
+  h+='<p style=\"font-size:10px;color:#555577;margin-bottom:6px\">测试位: '+(ST.position==='driver'?'主驾位':ST.position==='rear'?'后排中心':'中心位')+' | 车型: '+(ST.car||'未填')+' | 第'+ST.round+'轮</p>';
 
   if(peaks.length===0&&dips.length===0){
-    h+='<p style="color:var(--a2);font-weight:600">✅ 频响表现良好，所有频段均在 ±3dB 容差范围内</p>';
+    h+='<p style=\"color:#00dd88;font-weight:600\">✅ 频响表现良好！所有频段均在±3dB容差范围内</p>';
   } else {
-    h+='<p style="font-size:11px;color:#aaa">检测到 <b style="color:var(--r)">'+peaks.length+' 个波峰</b> + <b style="color:var(--y)">'+dips.length+' 个波谷</b> (超出±3dB)</p>';
+    h+='<p style=\"font-size:11px;color:#aaaacc\">检测到 <b style=\"color:#ff3355\">'+peaks.length+' 个波峰</b> + <b style=\"color:#ff9922\">'+dips.length+' 个波谷</b> (超出±3dB)</p>';
 
-    // Perceptual notes
-    var hfPeaks=peaks.filter(function(p){return p.f>=2500&&p.f<=5000;});
-    var lfPeaks=peaks.filter(function(p){return p.f>=50&&p.f<=100;});
-    var mdDips=dips.filter(function(p){return p.f>=180&&p.f<=350;});
-    var loDips=dips.filter(function(p){return p.f<=60;});
+    // Perceptual analysis
+    var hfP=peaks.filter(function(p){return p.f>=2500&&p.f<=6000;});
+    var lfP=peaks.filter(function(p){return p.f>=40&&p.f<=100;});
+    var mdD=dips.filter(function(p){return p.f>=180&&p.f<=350;});
+    var loD=dips.filter(function(p){return p.f<=60;});
 
-    if(hfPeaks.length>0)h+='<p style="font-size:10px;margin-top:6px"><span class="tag r">⚠ 高频刺耳</span> '+hfPeaks.map(function(p){return p.f+'Hz'}).join(', ')+' — 玻璃反射/高音过亮，建议优先衰减</p>';
-    if(lfPeaks.length>0)h+='<p style="font-size:10px;margin-top:4px"><span class="tag r">⚠ 低频驻波</span> '+lfPeaks.map(function(p){return p.f+'Hz'}).join(', ')+' — 座舱驻波共振，建议窄Q值衰减</p>';
-    if(mdDips.length>0)h+='<p style="font-size:10px;margin-top:4px"><span class="tag y">⚠ 相位抵消</span> '+mdDips.map(function(p){return p.f+'Hz'}).join(', ')+' — EQ难以根治，建议调整扬声器延时</p>';
-    if(loDips.length>0)h+='<p style="font-size:10px;margin-top:4px"><span class="tag b">⚠ 低频滚降</span> '+loDips.map(function(p){return p.f+'Hz'}).join(', ')+' — 扬声器低频下潜不足</p>';
+    if(hfP.length>0) h+='<p style=\"font-size:10px;margin-top:6px\"><span class=\"tag r\">⚠ 高频刺耳</span> '+hfP.map(function(p){return p.f+'Hz'}).join(', ')+' — 玻璃反射/高音过亮，建议优先衰减</p>';
+    if(lfP.length>0) h+='<p style=\"font-size:10px;margin-top:4px\"><span class=\"tag r\">⚠ 低频驻波</span> '+lfP.map(function(p){return p.f+'Hz'}).join(', ')+' — 座舱驻波共振，建议窄Q值衰减</p>';
+    if(mdD.length>0) h+='<p style=\"font-size:10px;margin-top:4px\"><span class=\"tag y\">⚠ 相位抵消</span> '+mdD.map(function(p){return p.f+'Hz'}).join(', ')+' — EQ难以根治，建议调整扬声器延时</p>';
+    if(loD.length>0) h+='<p style=\"font-size:10px;margin-top:4px\"><span class=\"tag b\">⚠ 低频下潜不足</span> '+loD.map(function(p){return p.f+'Hz'}).join(', ')+' — 扬声器低频响应不足</p>';
   }
   h+='</div>';
-
-  // EQ Table - only problematic bands
+  // EQ Suggestion table
   var eqBands=[];
   for(var i=0;i<ISO.length;i++){
-    var f=ISO[i],diff=snap[i]-targetLv[i];
-    if(Math.abs(diff)<=3)continue;
+    var f=ISO[i], diff=snap[i]-targetLv[i];
+    if(Math.abs(diff)<=3) continue;
     var gain=-diff;
-    gain=Math.max(-6,Math.min(3,gain));
-    var q;
-    if(diff>3)q=f<100?6:f<500?3.5:f<5000?2.5:1.8;
-    else q=f<100?1.5:f<500?1.2:f<5000?0.9:0.7;
-    eqBands.push({hz:f,gain:gain,q:q,note:diff>3?'🔻削峰':'🔺填谷',cls:diff>3?'cut':'boost'});
+    // Clamp: cut max -8dB, boost max +3dB (cut-first principle)
+    gain = Math.max(-8, Math.min(3, gain));
+    var q, note;
+    if(diff>3){
+      // Peak - need to cut
+      q = f<60?8:f<120?6:f<500?4:f<3000?3:2.5;
+      note = q>=6?'窄Q精准削峰':q>=4?'削峰(座舱共振)':'削峰(宽带衰减)';
+    } else {
+      // Dip - light fill
+      q = f<60?1.2:f<120?1.5:f<500?1:f<3000?0.9:0.7;
+      note = f<120?'谨慎补偿(防失真)':'轻度补偿';
+    }
+    eqBands.push({hz:f, gain:parseFloat(gain.toFixed(1)), q:parseFloat(q.toFixed(1)), note:note, cls:gain<0?'cut':(gain>0?'boost':'flat')});
   }
+  eqBands.sort(function(a,b){return Math.abs(b.gain)-Math.abs(a.gain);});
 
   if(eqBands.length>0){
-    h+='<div class="card"><h4>🎛 EQ 建议参数 (削峰为主，填谷为辅)</h4>';
-    h+='<p style="font-size:10px;color:#666;margin-bottom:6px">仅显示超出±3dB的频段 | 负值=衰减 正值=提升 | PEQ=参量均衡</p>';
-    h+='<div style="overflow-x:auto"><table>';
-    h+='<tr><th>频率 Hz</th><th>增益 dB</th><th>Q值</th><th>操作</th></tr>';
-    eqBands.sort(function(a,b){return Math.abs(b.gain)-Math.abs(a.gain);});
+    h+='<div class=\"card\"><h4>📋 EQ 建议参数 (削峰为主，填谷为辅)</h4>';
+    h+='<p style=\"font-size:9px;color:#555577;margin-bottom:6px\">仅显示超出±3dB的频段 | 负值=衰减 正值=提升 | PEQ=参量均衡</p>';
+    h+='<div style=\"overflow-x:auto\"><table>';
+    h+='<tr><th>频率 Hz</th><th>增益 dB</th><th>Q值</th><th>说明</th></tr>';
     for(var j=0;j<eqBands.length;j++){
       var b=eqBands[j];
-      h+='<tr><td style="color:var(--tb)">'+(b.hz>=1000?(b.hz/1000).toFixed(1)+'k':b.hz)+'</td>';
-      h+='<td class="'+b.cls+'">'+(b.gain>0?'+':'')+b.gain.toFixed(1)+' dB</td>';
-      h+='<td style="color:#888">'+b.q.toFixed(1)+'</td>';
-      h+='<td style="font-size:10px">'+b.note+'</td></tr>';
+      h+='<tr><td style=\"color:#e0e0ff\">'+(b.hz>=1000?(b.hz/1000).toFixed(1)+'k':b.hz)+'</td>';
+      h+='<td class=\"'+b.cls+'\">'+(b.gain>0?'+':'')+b.gain.toFixed(1)+' dB</td>';
+      h+='<td style=\"color:#888\">'+b.q.toFixed(1)+'</td>';
+      h+='<td style=\"font-size:9px\">'+b.note+'</td></tr>';
     }
     h+='</table></div></div>';
   }
 
   // Action buttons
-  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
-  h+='<button class="btn btn-act btn-sm" onclick="saveSession()">💾 保存本轮</button>';
-  h+='<button class="btn btn-out btn-sm" onclick="exportJSON()">📤 导出JSON</button>';
-  h+='<button class="btn btn-out btn-sm" onclick="retest()">🔄 重新测试</button>';
+  h+='<div style=\"display:flex;gap:8px;flex-wrap:wrap;margin-top:4px\">';
+  h+='<button class=\"btn btn-act btn-sm\" onclick=\"saveSession()\">💾 保存本轮</button>';
+  h+='<button class=\"btn btn-out btn-sm\" onclick=\"exportJSON()\">📛 导出JSON</button>';
+  h+='<button class=\"btn btn-out btn-sm\" onclick=\"retest()\">🔄 重新测试</button>';
   h+='</div>';
 
-  document.getElementById('mainContent').innerHTML=h;
+  document.getElementById('mainContent').innerHTML = h;
+}
+
+function showEmpty(){
+  document.getElementById('mainContent').innerHTML=
+    '<div style=\"text-align:center;padding:60px 20px\"><p style=\"font-size:40px;margin-bottom:12px\">📳</p><p style=\"color:#555577\">还没有测量数据</p><p style=\"color:#444;font-size:11px;margin-top:4px\">点击下方 ▶ 按钮开始RTA测试</p></div>';
+}
+
+function renderMain(){
+  document.getElementById('mainContent').innerHTML =
+    '<div class=\"cv-wrap\" id=\"rtaWrap\"><canvas id=\"rtaCanvas\"></canvas>'+
+    '<div class=\"legend\"><i><b style=\"background:#00dd88\"></b>当前曲线</i>'+
+    (prevSnap&&prevSnap.length?'<i><b style=\"background:rgba(255,51,85,.6)\"></b>上轮曲线</i>':'')+
+    '<i><b style=\"background:rgba(255,255,255,.3)\"></b>目标曲线</i></div></div>'+
+    '<div style=\"display:flex;gap:8px;margin-top:8px;align-items:center;font-size:10px;color:#555577\">'+
+    '<span>模式: <b style=\"color:'+(ST.micOk?'#00dd88':'#ff5522')+'\">'+(ST.micOk?'🎤 外录(手机麦克风)':'📢 内部(直接分析)')+'</b></span>'+
+    '<span style=\"margin-left:8px\">测试位: <b style=\"color:#e0e0ff\">'+(ST.position==='driver'?'主驾位':ST.position==='rear'?'后排中心':'中心位')+'</b></span>'+
+    '</div>';
+  setTimeout(function(){ if(!ST.playing) drawRTA(); }, 500);
 }
 
 function retest(){
-  prevSnap=snap.slice?snap.slice():new Float32Array(snap);
-  snap=null;
+  prevSnap = snap ? new Float32Array(snap) : prevSnap;
+  snap = null;
   renderMain();
-  document.getElementById('bottomHint').textContent='点击 ▶ 开始第'+(ST.round+1)+'轮测试';
-  document.getElementById('bottomHint').style.color='#555';
-  document.getElementById('btnSave').style.display='none';
-  document.getElementById('btnExport').style.display='none';
+  document.getElementById('bottomHint').textContent = '▶ 点击开始第'+(ST.round+1)+'轮测试';
+  document.getElementById('bottomHint').style.color = '#555577';
+  document.getElementById('btnSave').style.display = 'none';
+  document.getElementById('btnExport').style.display = 'none';
 }
 
 // ====== SESSION ======
 function saveSession(){
-  if(!snap){toast('⚠ 没有数据可保存');return;}
-  var car=document.getElementById('carName').value||'未填车型';
-  var name=car+'-R'+ST.round+'-'+new Date().toISOString().slice(5,10);
-  var session={car:car,round:ST.round,date:new Date().toISOString(),snap:Array.from(snap),prevSnap:prevSnap?Array.from(prevSnap):null,position:ST.position,src:ST.src};
-  var sessions=JSON.parse(localStorage.getItem('rta_sessions')||'{}');
-  sessions[name]=session;
-  localStorage.setItem('rta_sessions',JSON.stringify(sessions));
-  document.getElementById('sessionBadge').textContent=name;
+  if(!snap){ toast('⚠ 没有数据可保存'); return; }
+  var car = document.getElementById('carName').value||'未填车型';
+  var name = car+'-R'+ST.round+'-'+new Date().toISOString().slice(5,10);
+  var session = {car:car, round:ST.round, date:new Date().toISOString(), snap:Array.from(snap), prevSnap:prevSnap?Array.from(prevSnap):null, position:ST.position};
+  var sessions = JSON.parse(localStorage.getItem('rta_sessions')||'{}');
+  sessions[name] = session;
+  localStorage.setItem('rta_sessions', JSON.stringify(sessions));
+  document.getElementById('sessionBadge').textContent = name;
   toast('💾 已保存: '+name);
 }
 
 function exportJSON(){
-  if(!snap){toast('⚠ 没有数据可导出');return;}
-  var car=document.getElementById('carName').value||'未填车型';
+  if(!snap){ toast('⚠ 没有数据可导出'); return; }
+  var car = document.getElementById('carName').value||'未填车型';
   var eq=[];
-  if(targetLv){
-    for(var i=0;i<ISO.length;i++){
-      var d=snap[i]-targetLv[i];
-      if(Math.abs(d)>3)eq.push({hz:ISO[i],gain:parseFloat((-d).toFixed(1)),q:d>3?(ISO[i]<100?6:ISO[i]<500?3.5:2.5):(ISO[i]<100?1.5:ISO[i]<500?1.2:0.9)});
-    }
+  targetLv = targetLv || getTarget();
+  for(var i=0;i<ISO.length;i++){
+    var d=snap[i]-targetLv[i];
+    if(Math.abs(d)>3) eq.push({hz:ISO[i], gain:parseFloat((-d).toFixed(1)), q:d>3?(ISO[i]<100?6:ISO[i]<500?3.5:2.5):(ISO[i]<100?1.5:ISO[i]<500?1.2:0.9)});
   }
-  var data={app:'小白汽车调音',car:car,date:new Date().toISOString(),round:ST.round,position:ST.position,mode:ST.src,eq:eq};
-  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='RTA_'+car+'_R'+ST.round+'.json';a.click();
-  toast('📤 JSON已下载');
+  var data = {app:'小白汽车调音', car:car, date:new Date().toISOString(), round:ST.round, position:ST.position, eq:eq};
+  var blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'RTA_'+car+'_R'+ST.round+'.json'; a.click();
+  toast('📛 JSON已下载');
+}
+// ====== UTILS ======
+function fmtTime(s){
+  var m=Math.floor(s/60), sec=s%60;
+  return (m<10?'0'+m:m)+':'+(sec<10?'0'+sec:sec);
 }
 
-// ====== UTILS ======
-function updateCar(){ST.car=document.getElementById('carName').value;}
-function updateMicUI(){
-  document.getElementById('micStatus').innerHTML=ST.micOk
-    ?'<span class="dot green"></span>麦克风: 已就绪'
-    :'<span class="dot red"></span>麦克风: 不可用(内部模式)';
-}
-function fmtTime(s){var m=Math.floor(s/60),sec=s%60;return(m<10?'0'+m:m)+':'+(sec<10?'0'+sec:sec);}
 function toast(msg){
-  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
-  setTimeout(function(){t.classList.remove('on');},2200);
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  setTimeout(function(){ t.classList.remove('on'); }, 2200);
 }
 
 // ====== INIT ======
 (function init(){
-  // Show main UI immediately
   renderMain();
-  document.getElementById('bottomHint').textContent='正在检测麦克风...';
+  document.getElementById('bottomHint').textContent = '正在检测麦克风...';
+  document.getElementById('bottomHint').style.color = '#ff9922';
 
-  // Try to lock landscape
+  // Force landscape
   try{
-    if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
+    if(screen.orientation && screen.orientation.lock){
+      screen.orientation.lock('landscape').catch(function(){});
+    }
   }catch(e){}
 
   // Request mic
   reqMic().then(function(){
-    updateMicUI();
-    document.getElementById('bottomHint').textContent='✅ 点击 ▶ 开始RTA测试';
-    document.getElementById('bottomHint').style.color='var(--a2)';
+    document.getElementById('bottomHint').textContent = '✅ 点击 ▶ 开始RTA测试';
+    document.getElementById('bottomHint').style.color = '#00dd88';
   });
 
-  // Bluetooth hint
+  // Bluetooth reminder
   setTimeout(function(){
-    document.getElementById('btStatus').innerHTML='<span class="dot yellow"></span>蓝牙: 请连接车载音响';
-    toast('💡 提示: 请连接手机蓝牙到车载音响');
-  },1500);
+    document.getElementById('btHint').innerHTML='<span class=\"dot y\"></span>蓝牙: 请连接车载音响';
+    toast('📢 提示: 请连接手机蓝牙到车载音响');
+  }, 1500);
 
   // Resize handler
-  window.addEventListener('resize',function(){if(!ST.playing)drawRTA();});
-
-  // Keyboard
-  document.addEventListener('keydown',function(e){
-    if(e.code==='Space'){e.preventDefault();bigPlay();}
+  window.addEventListener('resize', function(){
+    if(!ST.playing) drawRTA();
   });
 
-  console.log('🚗 小白汽车调音 v5.0 - 就绪');
+  // Spacebar shortcut
+  document.addEventListener('keydown', function(e){
+    if(e.code==='Space'){ e.preventDefault(); bigPlay(); }
+  });
+
+  // Touch to resume AudioContext on iOS/Safari
+  document.addEventListener('touchstart', function(){
+    if(AC && AC.state==='suspended') AC.resume();
+  }, {once:true});
+
+  console.log('🚗 小白汽车调音 v6.0 - 就绪');
 })();
 </script>
 </body>
