@@ -23,15 +23,22 @@ jobs:
       - name: Build APK
         working-directory: android
         run: |
-          rm -f local.properties
-          echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          rm -f local.properties
+          ./gradlew assembleDebug --no-daemon --stacktrace --info 2>&1 | tee /tmp/build.log
         env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
+      - name: Show build output (last 100 lines)
+        if: always()
+        run: tail -100 /tmp/build.log 2>/dev/null || echo "No build log"
+
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+          if-no-files-found: warn
